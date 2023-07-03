@@ -4,4 +4,3 @@ import { galleryItems } from './gallery-items';
 
 console.log(galleryItems);
 
-const a = 15;
