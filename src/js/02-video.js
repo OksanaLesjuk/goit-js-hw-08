@@ -1,44 +1,50 @@
-import Player from '@vimeo/player'
+import Player from '@vimeo/player';
+import throttle from 'lodash.throttle';
 
 
-const iframe = document.querySelector(".vimeo-player");
+
+const iframe = document.querySelector("#vimeo-player");
 const player = new Player(iframe);
 
 
-player.on('timeupdate', onTimeupdate);
+//встановлюємо прослуховувач на подію та тротлимо функцію збереження часу в localStorage 
+player.on('timeupdate', throttle(onTimeupdate, 1000));
 
 function onTimeupdate(evt) {
     const currentTime = evt.seconds;
-    console.log(currentTime);
-    localStorage.setItem("videoplayer-current-time", JSON.stringify(currentTime))
+
+    localStorage.setItem('videoplayer-current-time', JSON.stringify(currentTime))
+
 }
 
+//отримуємо збережений час та ставимо 0 на випадок отримання некоректного значення
+const savedCurrentTime = localStorage.getItem('videoplayer-current-time') ?? 0;
 
-const savedCurrentTime = JSON.parse(localStorage.getItem("videoplayer-current-time"));
-console.log(typeof savedCurrentTime);
 
-if (savedCurrentTime) {
-    player.setCurrentTime(parseFloat(savedCurrentTime)).then(function (seconds) {
-        player.play();
-    }).catch(function (error) {
+
+// встановлюємо час, з якого буде запускатись відео посля завантаження сторінки із значенням  - останній збережений час  savedCurrentTime
+
+player
+    .setCurrentTime(savedCurrentTime)
+    .then(function (seconds) {
+        console.log(`savedCurrentTime is ${seconds} seconds`);
+    })
+    .catch(function (error) {
         switch (error.name) {
             case 'RangeError':
-
+                console.log('Current Time error');
                 break;
 
             default:
-                player.play()
+                console.log('This is default')
                 break;
         }
     });
-}
 
 
 
 
-// player.getVideoTitle().then(function (title) {
-//     console.log('title:', title);
-// });
+
 
 
 
