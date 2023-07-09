@@ -1,7 +1,7 @@
 import Player from '@vimeo/player';
 import throttle from 'lodash.throttle';
 
-
+const KEY_CURRENT_TIME = 'videoplayer-current-time';
 
 const iframe = document.querySelector("#vimeo-player");
 const player = new Player(iframe);
@@ -13,12 +13,12 @@ player.on('timeupdate', throttle(onTimeupdate, 1000));
 function onTimeupdate(evt) {
     const currentTime = evt.seconds;
 
-    localStorage.setItem('videoplayer-current-time', JSON.stringify(currentTime))
+    localStorage.setItem(KEY_CURRENT_TIME, JSON.stringify(currentTime))
 
 }
 
 //отримуємо збережений час та ставимо 0 на випадок отримання некоректного значення
-const savedCurrentTime = localStorage.getItem('videoplayer-current-time') ?? 0;
+const savedCurrentTime = localStorage.getItem(KEY_CURRENT_TIME) ?? 0;
 
 
 
